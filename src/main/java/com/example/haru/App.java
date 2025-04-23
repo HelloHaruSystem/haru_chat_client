@@ -31,9 +31,9 @@ public class App {
 
             // sets username
             out.println(username);
-            out.flush(); // ensure username is send immediatly
+            out.flush(); // ensure username is send immediately
 
-            // start a new thread to recieve messages
+            // start a new thread to receive messages
             new Thread(() -> {
                 try {
                     String message;
@@ -58,7 +58,7 @@ public class App {
                 }
             }
 
-            // clean everuthing up
+            // clean everything up
             socket.close();
             out.close();
             in.close();
