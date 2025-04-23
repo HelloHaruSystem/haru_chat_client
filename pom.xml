@@ -8,9 +8,16 @@
   <name>haru_chat_client</name>
   <url>http://maven.apache.org</url>
   
+  <!--
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
+  </properties>
+  -->
+
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
   <dependencies>
