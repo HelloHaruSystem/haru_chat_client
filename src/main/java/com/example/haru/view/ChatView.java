@@ -44,7 +44,7 @@ public class ChatView {
         messageInputField.setOnAction(event -> controller.sendMessage(messageInputField.getText())); // if you press enter in the text field
     }
 
-    public void ClearMessageInput() {
+    public void clearMessageInput() {
         messageInputField.clear();
     }
 

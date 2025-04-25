@@ -53,14 +53,14 @@ public class MessageCell extends ListCell<ChatMessage> {
 
             // add timestamp to the message
             Label timeLabel = new Label(message.getTimeStamp().format(
-                DateTimeFormatter.ofPattern("HH:MM")));
-            timeLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #88888");
+                DateTimeFormatter.ofPattern("HH:mm")));
+            timeLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #888888");
 
             bubble.getChildren().addAll(contentLabel, timeLabel);
 
             // style the bubble
             if (message.isFromCurrentUser()) {
-                bubble.setStyle("-fx-background-color: #DCF8C&; -fx-background-radius: 10;");
+                bubble.setStyle("-fx-background-color: #DCF8C6; -fx-background-radius: 10;");
             } else {
                 bubble.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 10;");
             }

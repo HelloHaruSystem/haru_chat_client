@@ -40,7 +40,7 @@ public class ChatController {
             connection.sendMessage(messageText);
 
             // clear the message input field after an input is given
-            view.ClearMessageInput();
+            view.clearMessageInput();
         }
     }
 
