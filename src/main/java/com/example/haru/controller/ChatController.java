@@ -18,7 +18,7 @@ public class ChatController {
 
         // bind the view to the model
         // TODO: implement
-        // view.bindToModel(messageStore);
+        view.bindToModel(messageStore);
 
         // setup the connection
         connection.setMessageReceivedHandler(message -> {
