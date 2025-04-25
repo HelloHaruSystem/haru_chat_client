@@ -1,6 +1,7 @@
 package com.example.haru.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ChatMessage {
     private final String sender;
@@ -31,5 +32,10 @@ public class ChatMessage {
 
     public boolean isFromCurrentUser() {
         return this.isMessageFromCurrentUser;
+    }
+
+    public String getFormattedTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:MM:SS");
+        return this.timeStamp.format(formatter);
     }
 }
