@@ -138,4 +138,38 @@
     -fx-background-color: #1a1a2e;
 }
 
+/* Top Bar styling */
+.top-bar {
+    -fx-background-color: #16213e; /* Match the input area background */
+    -fx-border-color: #e94560;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 10 15 10 15; /* Top, Right, Bottom, Left padding */
+    -fx-alignment: center-left;
+    -fx-min-height: 40px;
+}
+
+.top-bar-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.top-bar-button-box {
+    -fx-spacing: 8;
+    -fx-alignment: center-right;
+}
+
+.top-bar .button {
+    -fx-background-color: #0f3460;
+    -fx-text-fill: white;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-padding: 5 10 5 10;
+    -fx-cursor: hand;
+}
+
+.top-bar .button:hover {
+    -fx-background-color: #e94560;
+}
+
 /* login view goes here */

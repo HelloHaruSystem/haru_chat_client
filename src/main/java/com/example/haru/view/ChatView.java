@@ -3,9 +3,11 @@ package com.example.haru.view;
 import com.example.haru.controller.ChatController;
 import com.example.haru.model.ChatMessage;
 import com.example.haru.model.MessageStore;
+import com.example.haru.view.components.TopBar;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -30,6 +32,7 @@ public class ChatView {
         messageList = new ListView<>();
         messageInputField = new TextField();
         sendMessageButton = new Button("Send");
+        TopBar topBar = new TopBar();
 
         // add the css styling
         root.getStyleClass().add("chat-view");
@@ -45,6 +48,7 @@ public class ChatView {
         HBox.setHgrow(messageInputField, Priority.ALWAYS);
         
         // set the layout
+        root.setTop(topBar);
         root.setCenter(messageList);
         root.setBottom(inputArea);
 
