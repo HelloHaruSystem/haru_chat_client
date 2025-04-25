@@ -35,7 +35,7 @@ public class ChatMessage {
     }
 
     public String getFormattedTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:MM:SS");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         return this.timeStamp.format(formatter);
     }
 }
