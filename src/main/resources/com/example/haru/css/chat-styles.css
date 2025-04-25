@@ -1,0 +1,141 @@
+/* Main app style - this affects the entire application window */
+.root {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: #1a1a2e; /* Dark blue background for entire window */
+    -fx-background-radius: 10; /* Optional: rounded corners for the window */
+}
+
+/* Scene background */
+.scene-background {
+    -fx-background-color: #1a1a2e;
+}
+
+/* chat view style */
+.chat-view {
+    -fx-background-color: #1a1a2e;
+}
+
+/* message list style */
+.message-list {
+    -fx-background-color: #1a1a2e;
+    -fx-padding: 10px;
+    -fx-background-insets: 0; /* Removes default insets */
+    -fx-control-inner-background: #1a1a2e; /* Controls the cell background */
+}
+
+/* Remove the default selection highlight */
+.message-list .list-cell:filled:selected, 
+.message-list .list-cell:filled:selected:hover {
+    -fx-background-color: #1a1a2e;
+}
+
+/* Make cell background same as list background */
+.message-list .list-cell {
+    -fx-background-color: #1a1a2e;
+    -fx-padding: 5px 0;
+}
+
+/* input area style */
+.input-area {
+    -fx-background-color: #16213e; /* Darker blue for input area */
+    -fx-padding: 10px;
+    -fx-border-color: #0f3460;
+    -fx-border-width: 1px 0 0 0;
+}
+
+.message-input {
+    -fx-background-color: #0f3460; /* Dark blue input field */
+    -fx-text-fill: white;
+    -fx-background-radius: 18px;
+    -fx-border-radius: 18px;
+    -fx-padding: 8px 12px;
+    -fx-border-color: #e94560;
+    -fx-border-width: 1px;
+}
+
+.send-button {
+    -fx-background-color: #e94560; /* Accent color for send button */
+    -fx-text-fill: white;
+    -fx-background-radius: 50%;
+    -fx-min-width: 36px;
+    -fx-min-height: 36px;
+    -fx-max-width: 36px;
+    -fx-max-height: 36px;
+    -fx-padding: 0;
+}
+
+.send-button:hover {
+    -fx-background-color: #ff6b81; /* Lighter accent on hover */
+}
+
+/* message bubble style */
+.message-container {
+    -fx-padding: 2px 5px;
+    -fx-background-color: transparent; /* Remove the grey background */
+}
+
+.message-bubble {
+    -fx-background-radius: 18px;
+    -fx-padding: 8px 12px;
+    -fx-max-width: 300px;
+}
+
+.current-user-bubble {
+    -fx-background-color: #e94560; /* Accent color for user's messages */
+    -fx-text-fill: white;
+    -fx-background-radius: 18px;
+}
+
+.other-user-bubble {
+    -fx-background-color: #0f3460; /* Dark blue for other users' messages */
+    -fx-text-fill: white;
+    -fx-background-radius: 18px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.sender-name {
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-text-fill: #e0e0e0; /* Light grey for sender name */
+}
+
+.message-content {
+    -fx-wrap-text: true;
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+}
+
+.message-time {
+    -fx-font-size: 10px;
+    -fx-text-fill: rgba(255, 255, 255, 0.6); /* Semi-transparent white for time */
+    -fx-alignment: bottom-right;
+}
+
+/* user List style */
+.user-list {
+    -fx-background-color: #16213e;
+    -fx-border-color: #0f3460;
+    -fx-border-width: 0 1px 0 0;
+    -fx-min-width: 180px;
+    -fx-pref-width: 200px;
+}
+
+.user-list-header {
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+    -fx-background-color: #0f3460;
+    -fx-text-fill: white;
+    -fx-border-color: #e94560;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.user-list-cell {
+    -fx-padding: 8px 10px;
+    -fx-text-fill: white;
+}
+
+.user-list-cell:hover {
+    -fx-background-color: #1a1a2e;
+}
+
+/* login view goes here */

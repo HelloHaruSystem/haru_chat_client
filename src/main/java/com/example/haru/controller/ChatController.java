@@ -67,6 +67,11 @@ public class ChatController {
         messageStore.clearMessages();
     }
 
+    // applies the style sheet
+    public void applyStylesheet(javafx.scene.Scene scene) {
+        view.loadStyleSheet(scene);
+    }
+
     // getters and setters
     public BorderPane getView() {
         return view.getRoot();

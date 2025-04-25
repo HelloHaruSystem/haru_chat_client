@@ -63,5 +63,19 @@
         </configuration>
       </plugin>
     </plugins>
+    
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.css</include>
+          <include>**/*.fxml</include>
+          <include>**/*.properties</include>
+          <!-- Add other resource types as needed -->
+        </includes>
+      </resource>
+    </resources>
   </build>
+
+  
 </project>
