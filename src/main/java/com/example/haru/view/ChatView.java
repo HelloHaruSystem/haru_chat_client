@@ -7,7 +7,6 @@ import com.example.haru.view.components.TopBar;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -77,6 +76,8 @@ public class ChatView {
 
         // auto-scroll
         // TODO: Make this work in a nice way instead of this mess :)
+        // TODO: sometimes doesn't auto scroll
+        // TODO: if you scroll up make it so it doesn't auto scroll when a new message is recieved
         messageStore.getMessages().addListener((ListChangeListener<ChatMessage>) change -> {
             while (change.next()) {
                

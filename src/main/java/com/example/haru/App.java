@@ -1,10 +1,13 @@
 package com.example.haru;
 
+import java.io.InputStream;
+
 import com.example.haru.controller.ChatController;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -20,13 +23,25 @@ public class App extends Application{
         // apply the stylesheet
         chatController.applyStylesheet(chatScene);
 
-        // setupstage
+        // setup stage
         primaryStage.setTitle("Haru Chat");
         primaryStage.setScene(chatScene);
 
+        // set icon for the stage
+        try {
+           InputStream iconStream = getClass().getResourceAsStream("/com/example/haru/images/penguin_icon.png");
+            if (iconStream != null) {
+                primaryStage.getIcons().add(new Image(iconStream));
+            } else {
+                System.out.println("Could not load application icon!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // close app when closing the window
         primaryStage.setOnCloseRequest(event -> {
-            System.out.println("app closing");
+            System.out.println("App closing...");
 
             if (chatController != null) {
                 chatController.shutdown();

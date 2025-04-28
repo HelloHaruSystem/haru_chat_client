@@ -70,7 +70,8 @@
         <includes>
           <include>**/*.css</include>
           <include>**/*.fxml</include>
-          <include>**/*.properties</include>
+          <include>**/*.png</include>
+          <include>**/*.jpg</include>
           <!-- Add other resource types as needed -->
         </includes>
       </resource>
