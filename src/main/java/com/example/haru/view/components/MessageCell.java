@@ -1,7 +1,6 @@
-package com.example.haru.view;
+package com.example.haru.view.components;
 
 import com.example.haru.model.ChatMessage;
-import com.example.haru.view.components.MessageBubble;
 
 import javafx.scene.control.ListCell;
 

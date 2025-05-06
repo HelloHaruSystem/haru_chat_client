@@ -3,6 +3,7 @@ package com.example.haru.view;
 import com.example.haru.controller.ChatController;
 import com.example.haru.model.ChatMessage;
 import com.example.haru.model.MessageStore;
+import com.example.haru.view.components.MessageCell;
 import com.example.haru.view.components.TopBar;
 
 import javafx.application.Platform;

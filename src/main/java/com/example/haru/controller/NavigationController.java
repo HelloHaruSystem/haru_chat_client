@@ -72,4 +72,10 @@ public class NavigationController {
         this.primaryStage.setScene(chatScene);
         this.primaryStage.centerOnScreen();
     }
+
+    public void shutdown() {
+        if (this.chatController != null) {
+            this.chatController.shutdown();
+        }
+    }
 }

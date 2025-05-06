@@ -76,12 +76,12 @@ public class LoginView {
 
         // add the components to the grid
         gridPane.add(usernameLabel, 0, 0);
-        gridPane.add(this.usernameField, 1, 0);
-        gridPane.add(passwordLabel, 0, 1);
-        gridPane.add(this.passwordField, 1, 1);
+        gridPane.add(this.usernameField, 0, 1);
+        gridPane.add(passwordLabel, 0, 2);
+        gridPane.add(this.passwordField, 0, 3);
 
         // main container
-        VBox loginContainer = new VBox(20);
+        VBox loginContainer = new VBox(15) ;
         loginContainer.setAlignment(Pos.CENTER);
         loginContainer.getStyleClass().add("login-container");
         loginContainer.getChildren().addAll(title, gridPane, buttonBox, statusLabel);
