@@ -1,0 +1,85 @@
+/* Login Screen Styles */
+
+.root {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: #1a1a2e; /* Dark blue background */
+    -fx-background-radius: 10;
+}
+
+.login-view {
+    -fx-background-color: #1a1a2e;
+}
+
+.login-container {
+    -fx-background-color: #16213e; /* Darker blue for login container */
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-border-color: #0f3460;
+    -fx-border-width: 1px;
+    -fx-padding: 30px;
+    -fx-max-width: 350px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 5);
+}
+
+.login-title {
+    -fx-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-effect: dropshadow(three-pass-box, #e94560, 0, 0, 0, 1);
+}
+
+.login-field {
+    -fx-background-color: #0f3460; /* Dark blue input field */
+    -fx-text-fill: white;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px 12px;
+    -fx-border-color: #e94560;
+    -fx-border-width: 1px;
+    -fx-min-width: 200px;
+}
+
+.login-button, .register-button {
+    -fx-background-radius: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 20px;
+    -fx-cursor: hand;
+}
+
+.login-button {
+    -fx-background-color: #e94560; /* Accent color for login button */
+    -fx-text-fill: white;
+}
+
+.login-button:hover {
+    -fx-background-color: #ff6b81; /* Lighter accent on hover */
+}
+
+.register-button {
+    -fx-background-color: #0f3460; /* Dark blue for register button */
+    -fx-text-fill: white;
+    -fx-border-color: #e94560;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
+}
+
+.register-button:hover {
+    -fx-background-color: #1a1a2e; /* Darker blue on hover */
+}
+
+.status-error {
+    -fx-text-fill: #ff4757; /* Red for error messages */
+    -fx-font-size: 12px;
+    -fx-padding: 5px;
+}
+
+.status-success {
+    -fx-text-fill: #2ed573; /* Green for success messages */
+    -fx-font-size: 12px;
+    -fx-padding: 5px;
+}
+
+/* Label styling */
+.label {
+    -fx-text-fill: white;
+}

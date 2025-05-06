@@ -1,6 +1,7 @@
 package com.example.haru.controller;
 
 import com.example.haru.model.AuthModel;
+import com.example.haru.util.TokenManager;
 import com.example.haru.view.LoginView;
 
 import javafx.application.Platform;
