@@ -3,33 +3,25 @@ package com.example.haru;
 import java.io.InputStream;
 
 import com.example.haru.controller.ChatController;
+import com.example.haru.controller.NavigationController;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class App extends Application{
+
+
+public class App extends Application {
+    private NavigationController navigationController;
 
     @Override
     public void start(Stage primaryStage) {
-        ChatController chatController = new ChatController("Halfdan", "10.0.1.211", 2909);
-
-        // get view from controller and set up scene
-        Scene chatScene = new Scene(chatController.getView(), 800, 600);
-
-        // apply the stylesheet
-        chatController.applyStylesheet(chatScene);
-
-        // setup stage
-        primaryStage.setTitle("Haru Chat");
-        primaryStage.setScene(chatScene);
-
-        // set icon for the stage
+        // setup application icon
+        //TODO: move this to a method of it's own
         try {
-           InputStream iconStream = getClass().getResourceAsStream("/com/example/haru/images/penguin_icon.png");
+            InputStream iconStream = getClass().getResourceAsStream("/com/example/haru/images/penguin_icon.png");
             if (iconStream != null) {
                 primaryStage.getIcons().add(new Image(iconStream));
             } else {
@@ -39,22 +31,26 @@ public class App extends Application{
             e.printStackTrace();
         }
 
-        // close app when closing the window
+        // set title and style
+        primaryStage.setTitle("Haru Chat");
+        primaryStage.initStyle(StageStyle.DECORATED);
+
+        // init nav controller
+        this.navigationController = new NavigationController(primaryStage);
+
+        // handle app close request
+        //TODO: move to a method of it's own
         primaryStage.setOnCloseRequest(event -> {
             System.out.println("App closing...");
 
-            if (chatController != null) {
-                chatController.shutdown();
+            if (this.navigationController != null) {
+                this.navigationController.shutdown();
             }
 
             Platform.exit();
         });
 
-        // attempt at changing the the window border color itself
-        // this is usually controlled by the os
-        primaryStage.initStyle(StageStyle.DECORATED);
-
-        // show the stage
+        // show the stave
         primaryStage.show();
     }
 
