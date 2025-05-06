@@ -105,13 +105,13 @@ public class LoginView {
         });
 
         // add trigger to password and login field to trigger login
-        this.usernameField.setOnAction(-> {
+        this.usernameField.setOnAction(event -> {
             String username = this.usernameField.getText();
             String password = passwordField.getText();
             loginController.login(username, password);
         });
 
-        this.passwordFieldField.setOnAction(-> {
+        this.passwordField.setOnAction(event -> {
             String username = this.usernameField.getText();
             String password = passwordField.getText();
             loginController.login(username, password);
@@ -125,7 +125,7 @@ public class LoginView {
             this.statusLabel.getStyleClass().remove("status-success");
             this.statusLabel.getStyleClass().add("status-error");
         } else {
-            this.statusLabel.getStyleClass().remove("status.error");
+            this.statusLabel.getStyleClass().remove("status-error");
             this.statusLabel.getStyleClass().add("status-success");
         }
     }
