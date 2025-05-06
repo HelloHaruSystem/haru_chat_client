@@ -46,7 +46,7 @@ public class LoginView {
         this.usernameField.setPromptText("username");
         this.usernameField.getStyleClass().add("login-field");
 
-        Label passwordLabel = new Label("Password");
+        Label passwordLabel = new Label("Password:");
         this.passwordField = new PasswordField();
         this.passwordField.setPromptText("password");
         this.passwordField.getStyleClass().add("login-field");
