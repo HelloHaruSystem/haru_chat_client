@@ -73,6 +73,14 @@ public class AuthModel {
                     
                     String token = jsonResponse.getString("token");                         // debug
                     System.out.println("Token received: " + token.substring(0, 20) + "...");    // debug
+
+                    // Check if there's user info and log it
+                    // also debug
+                    if (jsonResponse.has("user")) {
+                        JSONObject userInfo = jsonResponse.getJSONObject("user");
+                        System.out.println("User ID: " + userInfo.optInt("id"));
+                        System.out.println("Username: " + userInfo.optString("username"));
+                    }
                     
                     return jsonResponse.getString("token");
                 } else {
@@ -82,7 +90,8 @@ public class AuthModel {
                 }
             } catch (Exception e) {
                 System.out.println("Error parsing JSON response: " + e.getMessage());
-                return null;
+                e.printStackTrace();
+                throw e;
             }
         } else {
             System.out.println("Login failed with status code: " + statusCode);
