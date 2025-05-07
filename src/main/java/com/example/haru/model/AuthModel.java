@@ -24,15 +24,24 @@ public class AuthModel {
         this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
             .build();
+
+        //TODO: remove later just for debugging
+        // Debug output - print configuration
+        System.out.println("API Base URL: " + this.config.getDefaultAPIBaseUrl());
+        System.out.println("Login Endpoint: " + this.config.getDefaultLoginEndpoint());
+        System.out.println("Register Endpoint: " + this.config.getDefaultRegisterEndPoint());
     }
 
     public String login(String username, String password) throws IOException, InterruptedException {
         URI uri = URI.create(this.config.getDefaultAPIBaseUrl() + this.config.getDefaultLoginEndpoint());
+        String uriString = this.config.getDefaultAPIBaseUrl() + this.config.getDefaultLoginEndpoint(); // debug
+        System.out.println("Login URI: " + uriString); // debug
 
         // create request body
         JSONObject requestBody = new JSONObject();
         requestBody.put("username", username);
         requestBody.put("password", password);
+        System.out.println("Request Body: " + requestBody.toString()); // debug
 
         // create the request
         HttpRequest request = HttpRequest.newBuilder()
@@ -43,6 +52,8 @@ public class AuthModel {
             .timeout(Duration.ofSeconds(TIMEOUT_SECONDS))
             .build();
         
+            System.out.println("Sending login request..."); // debug
+
         // send the request
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -50,12 +61,19 @@ public class AuthModel {
         int statusCode = response.statusCode();
         String responseBody = response.body();
 
+        System.out.println("Response Status Code: " + statusCode); // debug
+        System.out.println("Response Body: " + responseBody); // debug
+
         if (statusCode == 200) {
             try {
                 JSONObject jsonResponse = new JSONObject(responseBody);
 
                 // check for the success flag send from auth server
                 if (jsonResponse.has("success") && jsonResponse.getBoolean("success")) {
+                    
+                    String token = jsonResponse.getString("token");                         // debug
+                    System.out.println("Token received: " + token.substring(0, 20) + "...");    // debug
+                    
                     return jsonResponse.getString("token");
                 } else {
                     System.out.println("Login failed: " +
