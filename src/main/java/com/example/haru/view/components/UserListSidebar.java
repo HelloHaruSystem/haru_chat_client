@@ -3,6 +3,7 @@ package com.example.haru.view.components;
 import com.example.haru.model.MessageStore;
 
 import javafx.animation.TranslateTransition;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -66,13 +67,18 @@ public class UserListSidebar extends BorderPane {
         this.userList.setItems(messageStore.activeUsers());
 
         // update count with changes
-        messageStore.activeUsers().addListener((obs, oldList, newList) -> {
-            updateUserCount(newList.size());
+        messageStore.activeUsers().addListener((ListChangeListener<String>) change -> {
+            while (change.next()) {
+                updateUserCount(messageStore.activeUsers().size());
+            }
         });
 
         // add components to the sidebar
         VBox.setVgrow(this.userList, Priority.ALWAYS);
         this.sidebar.getChildren().addAll(header, this.userList);
+
+        // init toggle button
+        this.toggleButton = createToggleButton();
 
         // create the container for the user list and toggle button
         this.container = new StackPane();
@@ -101,7 +107,7 @@ public class UserListSidebar extends BorderPane {
         button.getStyleClass().add("toggle-button");
 
         // set on action for the toggle button
-        button.setOnAction(event -> toggleSideBar());
+        button.setOnAction(event -> toggleSidebar());
 
         return button;
     }
@@ -159,5 +165,10 @@ public class UserListSidebar extends BorderPane {
         super.layoutChildren();
         setPrefWidth(isExpanded ? SIDEBAR_WIDTH : COLLAPSED_WIDTH);
         setMinWidth(isExpanded ? SIDEBAR_WIDTH : COLLAPSED_WIDTH);
+    }
+
+    // getters and setters
+    public boolean getIsExpanded() {
+        return this.isExpanded;
     }
 }

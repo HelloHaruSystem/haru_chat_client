@@ -56,7 +56,7 @@ public class NavigationController {
         // initialize a new chat controller
         this.chatController = new ChatController(username, 
             this.config.getDefaultServerAddress(), 
-            this.config.getDefaultServerPort());
+            this.config.getDefaultServerPort(), this);
 
         // get the chat view from the controller
         BorderPane chatRoot = this.chatController.getView();

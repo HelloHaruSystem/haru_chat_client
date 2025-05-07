@@ -30,8 +30,8 @@ public class MessageBubble extends HBox {
 
         if (message.isFromCurrentUser()) {
             bubble.getStyleClass().add("current-user-bubble");
-        } else if (this.SYSTEM_USERNAME.equals(message.getSender())) {
-            getStyleClass().add("system-message");
+        } else if (SYSTEM_USERNAME.equals(message.getSender())) {
+            bubble.getStyleClass().add("system-message");
         } else {
             bubble.getStyleClass().add("other-user-bubble");
         }
@@ -54,6 +54,7 @@ public class MessageBubble extends HBox {
         // add the message contents
         Label contentLabel = new Label(message.getContent());
         contentLabel.setWrapText(true);
+        contentLabel.getStyleClass().add("message-content");
 
         // add the time stamp to the bubble
         Label timeLabel = new Label(message.getFormattedTime());

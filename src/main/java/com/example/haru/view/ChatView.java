@@ -22,10 +22,14 @@ public class ChatView {
     private TextField messageInputField;
     private Button sendMessageButton;
     private UserListSidebar userListSidebar;
+    private TopBar topBar;
 
     public ChatView(ChatController controller) {
         createUI(controller.getMessageStore());
         bindToController(controller);
+
+        this.topBar.updateWelcomeMessage(controller.getUsername());
+        setupTopBarActions(controller);
     }
 
     private void createUI(MessageStore messageStore) {
@@ -35,7 +39,7 @@ public class ChatView {
         this.messageInputField = new TextField();
         this.sendMessageButton = new Button("Send");
         this.userListSidebar = new UserListSidebar(messageStore);
-        TopBar topBar = new TopBar();
+        this.topBar = new TopBar();
         
         // add the css styling
         this.root.getStyleClass().add("chat-view");
@@ -51,10 +55,10 @@ public class ChatView {
         HBox.setHgrow(messageInputField, Priority.ALWAYS);
         
         // set the layout
-        this.root.setTop(topBar);
-        this.root.setCenter(messageList);
+        this.root.setTop(this.topBar);
+        this.root.setCenter(this.messageList);
         this.root.setBottom(inputArea);
-        this.root.setLeft(userListSidebar);
+        this.root.setLeft(this.userListSidebar);
 
         // style components
         this.messageList.setCellFactory(param -> new MessageCell());
@@ -71,13 +75,38 @@ public class ChatView {
         this.messageInputField.setOnAction(event -> controller.sendMessage(messageInputField.getText())); // if you press enter in the text field
     }
 
+    // actions for the top bar
+    private void setupTopBarActions(ChatController controller) {
+        this.topBar.setClearChatAction(() -> controller.clearMessages());
+        this.topBar.setLogoutAction(() -> controller.logout());
+        
+        // yet to be implemented
+        this.topBar.setServerSelectAction(() -> {
+            // do this properly in the future
+            controller.getMessageStore().addSystemMessage("Server selection not implemented yet.");
+        });
+
+        // also yet to be implemented :)
+        this.topBar.setPrivateMessageAction(() -> {
+            // do this properly in the future
+            controller.getMessageStore().addSystemMessage("Private messaging not implemented yet.");
+        });
+
+        // same as above :/
+        this.topBar.setHelpMessageAction(() -> {
+            // do this properly in the future
+            controller.getMessageStore().addSystemMessage("Help: Use /clear to clear the chat history.");
+        });
+
+    }
+
     public void clearMessageInput() {
         messageInputField.clear();
     }
 
     // bind the model data
     public void bindToModel(MessageStore messageStore) {
-        messageList.setItems(messageStore.getMessages());
+        this.messageList.setItems(messageStore.getMessages());
 
         // auto-scroll
         // TODO: Make this work in a nice way instead of this mess :)
@@ -88,22 +117,28 @@ public class ChatView {
                
                 Platform.runLater(() -> {
                     scrollToBottom();
-                    messageInputField.requestFocus();
+                    this.messageInputField.requestFocus();
                 });
             }
         });
     }
 
     public void scrollToBottom() {
-        int size = messageList.getItems().size();
+        int size = this.messageList.getItems().size();
         if (size > 0) {
-            messageList.scrollTo(size -1);
+            this.messageList.scrollTo(size -1);
         } 
     }
 
     // Toggle the user list visibility
     public void toggleUserList() {
-        //TODO: implement
+        if (this.userListSidebar != null) {
+            if (this.userListSidebar.getIsExpanded()) {
+                this.userListSidebar.Collapse();
+            } else {
+                this.userListSidebar.expand();
+            }
+        }
     }
 
     // getters and setters 

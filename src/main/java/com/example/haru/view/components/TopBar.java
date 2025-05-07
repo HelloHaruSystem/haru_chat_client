@@ -59,6 +59,10 @@ public class TopBar extends HBox {
         this.getStyleClass().add("top-bar");
     }
 
+    public void updateWelcomeMessage(String username) {
+        welcomeLabel.setText("Welcome, " + username + "!");
+    }
+
     // set the action of clear chat butotn
     public void setClearChatAction(Runnable action) {
         this.clearChatButton.setOnAction(event -> {
@@ -80,6 +84,30 @@ public class TopBar extends HBox {
     // set the action of the help button
     public void setHelpAction(Runnable action) {
         helpButton.setOnAction(event -> {
+            if (action != null) {
+                action.run();
+            }
+        });
+    }
+
+    public void setServerSelectAction(Runnable action) {
+        this.serverSelectButton.setOnAction(event -> {
+            if (action != null) {
+                action.run();
+            }
+        });
+    }
+
+    public void setPrivateMessageAction(Runnable action) {
+        this.privateMessageButton.setOnAction(event -> {
+            if (action != null) {
+                action.run();
+            }
+        });
+    }
+
+    public void setHelpMessageAction(Runnable action) {
+        this.helpButton.setOnAction(event -> {
             if (action != null) {
                 action.run();
             }
