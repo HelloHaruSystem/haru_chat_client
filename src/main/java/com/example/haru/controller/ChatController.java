@@ -1,5 +1,7 @@
 package com.example.haru.controller;
 
+import java.util.function.Consumer;
+
 import com.example.haru.model.ConnectionModel;
 import com.example.haru.model.MessageStore;
 import com.example.haru.view.ChatView;
@@ -12,13 +14,16 @@ public class ChatController {
     private final ConnectionModel connection;
     private final ChatView view;
     private final String username;
+    private final NavigationController navigationController;
 
-    public ChatController(String username, String serverAddress, int port) {
+    public ChatController(String username, String serverAddress, int port, NavigationController navigationController) {
         this.username = username;
         this.messageStore = new MessageStore();
         this.connection = new ConnectionModel();
+        this.navigationController = navigationController;
         this.view = new ChatView(this);
 
+        // bind view to model
         view.bindToModel(messageStore);
 
         // setup message handling
@@ -55,6 +60,15 @@ public class ChatController {
         this.connection.connect(this.username, serverAddress, port);
     }
 
+    // logout from the application
+    public void logout() {
+        disconnect();
+
+        if (this.navigationController != null) {
+            navigationController.logout();
+        }
+    }
+
     // shutdown the application properly
     public void shutdown() {
         connection.shutdown();
@@ -77,5 +91,9 @@ public class ChatController {
 
     public String getUsername(){
         return this.username;
+    }
+
+    public MessageStore getMessageStore() {
+        return this.messageStore;
     }
 }

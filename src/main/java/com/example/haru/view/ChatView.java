@@ -5,6 +5,7 @@ import com.example.haru.model.ChatMessage;
 import com.example.haru.model.MessageStore;
 import com.example.haru.view.components.MessageCell;
 import com.example.haru.view.components.TopBar;
+import com.example.haru.view.components.UserListSidebar;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -20,25 +21,27 @@ public class ChatView {
     private ListView<ChatMessage> messageList;
     private TextField messageInputField;
     private Button sendMessageButton;
+    private UserListSidebar userListSidebar;
 
     public ChatView(ChatController controller) {
-        createUI();
+        createUI(controller.getMessageStore());
         bindToController(controller);
     }
 
-    private void createUI() {
+    private void createUI(MessageStore messageStore) {
         // create ui elements 
         this.root = new BorderPane();
-        messageList = new ListView<>();
-        messageInputField = new TextField();
-        sendMessageButton = new Button("Send");
+        this.messageList = new ListView<>();
+        this.messageInputField = new TextField();
+        this.sendMessageButton = new Button("Send");
+        this.userListSidebar = new UserListSidebar(messageStore);
         TopBar topBar = new TopBar();
-
+        
         // add the css styling
-        root.getStyleClass().add("chat-view");
-        messageList.getStyleClass().add("message-list");
-        messageInputField.getStyleClass().add("message-input");
-        sendMessageButton.getStyleClass().add("send-button");
+        this.root.getStyleClass().add("chat-view");
+        this.messageList.getStyleClass().add("message-list");
+        this.messageInputField.getStyleClass().add("message-input");
+        this.sendMessageButton.getStyleClass().add("send-button");
 
         // setup layouts
         HBox inputArea = new HBox(10, messageInputField, sendMessageButton);
@@ -48,12 +51,13 @@ public class ChatView {
         HBox.setHgrow(messageInputField, Priority.ALWAYS);
         
         // set the layout
-        root.setTop(topBar);
-        root.setCenter(messageList);
-        root.setBottom(inputArea);
+        this.root.setTop(topBar);
+        this.root.setCenter(messageList);
+        this.root.setBottom(inputArea);
+        this.root.setLeft(userListSidebar);
 
         // style components
-        messageList.setCellFactory(param -> new MessageCell());
+        this.messageList.setCellFactory(param -> new MessageCell());
     }
 
     // loads the CSS stylesheet for this view
@@ -63,8 +67,8 @@ public class ChatView {
 
     private void bindToController(ChatController controller) {
         // connects the ui components to the controller
-        sendMessageButton.setOnAction(event -> controller.sendMessage(messageInputField.getText())); // if you click send
-        messageInputField.setOnAction(event -> controller.sendMessage(messageInputField.getText())); // if you press enter in the text field
+        this.sendMessageButton.setOnAction(event -> controller.sendMessage(messageInputField.getText())); // if you click send
+        this.messageInputField.setOnAction(event -> controller.sendMessage(messageInputField.getText())); // if you press enter in the text field
     }
 
     public void clearMessageInput() {
@@ -97,9 +101,18 @@ public class ChatView {
         } 
     }
 
+    // Toggle the user list visibility
+    public void toggleUserList() {
+        //TODO: implement
+    }
+
     // getters and setters 
     // here we just return the root node for the chat
     public BorderPane getRoot() {
         return this.root;
+    }
+
+    public UserListSidebar getUserListSidebar() {
+        return this.userListSidebar;
     }
 }
