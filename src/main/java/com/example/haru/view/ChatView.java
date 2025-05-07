@@ -147,6 +147,10 @@ public class ChatView {
         return this.root;
     }
 
+    public TopBar getTopBar() {
+        return this.topBar;
+    }
+
     public UserListSidebar getUserListSidebar() {
         return this.userListSidebar;
     }

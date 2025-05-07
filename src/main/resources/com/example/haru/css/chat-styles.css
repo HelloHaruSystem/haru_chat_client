@@ -143,13 +143,12 @@
 
 .user-list {
     -fx-background-color: #16213e;
-    -fx-border-color: transparent;
     -fx-padding: 5px;
 }
 
 .user-list .list-cell {
     -fx-background-color: #16213e;
-    -fx-text-fill: white;
+    -fx-text-fill: white; /* Make text white for visibility */
     -fx-padding: 8px 10px;
 }
 
@@ -168,7 +167,7 @@
 
 .user-list-cell {
     -fx-padding: 8px 10px;
-    -fx-text-fill: white;
+    -fx-text-fill: white; /* Make text white for visibility */
 }
 
 .user-list-cell:hover {
@@ -187,11 +186,11 @@
 }
 
 .username-label {
-    -fx-text-fill: white;
+    -fx-text-fill: white; /* Make text white for visibility */
     -fx-font-size: 14px;
 }
 
-/* Toggle button styling for user list sidebar */
+/* User list sidebar toggle button */
 .toggle-button {
     -fx-background-color: #0f3460;
     -fx-background-radius: 50%;
@@ -205,7 +204,6 @@
     -fx-border-width: 1px;
     -fx-border-radius: 50%;
     -fx-content-display: graphic-only;
-    -fx-z-index: 100;
 }
 
 .toggle-button:hover {
