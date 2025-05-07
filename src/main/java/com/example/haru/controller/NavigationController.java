@@ -54,7 +54,9 @@ public class NavigationController {
         }
 
         // initialize a new chat controller
-        this.chatController = new ChatController(username, this.config.getDefaultServerAddress(), this.config.getDefaultServerPort());
+        this.chatController = new ChatController(username, 
+            this.config.getDefaultServerAddress(), 
+            this.config.getDefaultServerPort());
 
         // get the chat view from the controller
         BorderPane chatRoot = this.chatController.getView();
@@ -71,7 +73,13 @@ public class NavigationController {
         this.primaryStage.centerOnScreen();
     }
 
+    public void logout() {
+        shutdown();
+        showLoginScreen();
+    }
+
     public void shutdown() {
+        TokenManager.clearToken();;
         if (this.chatController != null) {
             this.chatController.shutdown();
         }
