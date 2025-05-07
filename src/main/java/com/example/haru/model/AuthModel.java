@@ -11,15 +11,17 @@ import java.nio.charset.StandardCharsets;
 
 import org.json.JSONObject;
 
+import com.example.haru.config.AppConfig;
+
 public class AuthModel {
-    // API CONFIG
-    //TODO: move to config file
-    private static final String API_BASE_URL = "http://localhost:8080/api";
-    private static final String LOGIN_ENDPOINT = "/auth/login";
-    private static final String REGISTER_ENDPOINT = "/auth/register";
+    private final AppConfig config;
+
+    public AuthModel() {
+        this.config = AppConfig.getInstance();
+    }
 
     public String login(String username, String password) throws IOException {
-        URI uri = URI.create(API_BASE_URL + LOGIN_ENDPOINT);
+        URI uri = URI.create(this.config.getDefaultAPIBaseUrl() + this.config.getDefaultLoginEndpoint());
         URL url = uri.toURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         
@@ -62,13 +64,16 @@ public class AuthModel {
                 //TODO: Handle error response
                 return null;
             }
+        } catch (IOException e) {
+            System.out.println("Network error during login: " + e.getMessage());
+            throw e;
         } finally {
             connection.disconnect();
         }
     }
 
     public boolean register(String username, String password) throws IOException {
-        URI uri = URI.create(API_BASE_URL + REGISTER_ENDPOINT);
+        URI uri = URI.create(this.config.getDefaultAPIBaseUrl() + this.config.getDefaultRegisterEndPoint());
         URL url = uri.toURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -93,10 +98,21 @@ public class AuthModel {
             // handle the response
             int statusCode = connection.getResponseCode();
 
+            if (statusCode != 201) {
+                //TODO: read error response for logging
+            }
             // 201 created if successful
             return statusCode == 201;
+        } catch (IOException e) {
+            System.out.println("Network error during registration: " + e.getMessage());
+            throw e;
         } finally {
             connection.disconnect();
         }
+    }
+
+    //TODO: add feature
+    public String refreshToken(String currentToken) {
+        throw new UnsupportedOperationException("Feature incomplete.");
     }
 }
