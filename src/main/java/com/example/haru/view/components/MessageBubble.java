@@ -10,6 +10,8 @@ import javafx.scene.layout.VBox;
 
 public class MessageBubble extends HBox {
     
+    private static final String SYSTEM_USERNAME = "System";
+
     public MessageBubble(ChatMessage message) {
         super(10);
 
@@ -28,6 +30,8 @@ public class MessageBubble extends HBox {
 
         if (message.isFromCurrentUser()) {
             bubble.getStyleClass().add("current-user-bubble");
+        } else if (this.SYSTEM_USERNAME.equals(message.getSender())) {
+            getStyleClass().add("system-message");
         } else {
             bubble.getStyleClass().add("other-user-bubble");
         }
