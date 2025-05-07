@@ -1,5 +1,6 @@
 package com.example.haru.controller;
 
+import com.example.haru.config.AppConfig;
 import com.example.haru.util.TokenManager;
 
 import javafx.scene.Scene;
@@ -8,21 +9,18 @@ import javafx.stage.Stage;
 
 public class NavigationController {
     private final Stage primaryStage;
+    private final AppConfig config;
     private LoginController loginController;
     private ChatController chatController;
 
-    // server config
-    //TODO: Move to config file
-    //TODO: make it so the user can chose server
-    private final String serverAddress = "10.0.1.211";
-    private final int serverPort = 2909;
-
     public NavigationController(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        this.config = AppConfig.getInstance();
         this.loginController = new LoginController(this);
 
-        // when starting the login screen should first be displayed
         //TODO: implement a way to stay logged in
+
+        // when starting the login screen should first be displayed
         showLoginScreen();
     }
 
@@ -56,7 +54,7 @@ public class NavigationController {
         }
 
         // initialize a new chat controller
-        this.chatController = new ChatController(username, serverAddress, serverPort);
+        this.chatController = new ChatController(username, this.config.getDefaultServerAddress(), this.config.getDefaultServerPort());
 
         // get the chat view from the controller
         BorderPane chatRoot = this.chatController.getView();
