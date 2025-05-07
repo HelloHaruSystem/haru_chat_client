@@ -19,8 +19,6 @@ public class ChatController {
         this.connection = new ConnectionModel();
         this.view = new ChatView(this);
 
-        // bind the view to the model
-        // TODO: implement
         view.bindToModel(messageStore);
 
         // setup message handling

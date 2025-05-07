@@ -68,7 +68,7 @@ public class AuthModel {
     }
 
     public boolean register(String username, String password) throws IOException {
-        URI uri = URI.create(API_BASE_URL + LOGIN_ENDPOINT);
+        URI uri = URI.create(API_BASE_URL + REGISTER_ENDPOINT);
         URL url = uri.toURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
