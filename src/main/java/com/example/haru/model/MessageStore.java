@@ -20,7 +20,7 @@ public class MessageStore {
 
     public void addSystemMessage(String chatMessage) {
         ChatMessage systemMessage = new ChatMessage(
-            this.SYSTEM_USERNAME,
+            SYSTEM_USERNAME,
             chatMessage,
             LocalDateTime.now(),
             false
