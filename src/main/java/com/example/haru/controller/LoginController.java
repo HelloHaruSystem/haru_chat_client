@@ -11,6 +11,9 @@ public class LoginController {
     private final AuthModel authModel;
     private final NavigationController navigationController;
 
+    // delay on success constant
+    private static final int SUCCESS_DELAY_MS = 750; // 0.75 seconds
+
     public LoginController(NavigationController navigationController) {
         this.navigationController = navigationController;
         this.authModel = new AuthModel();
@@ -25,7 +28,7 @@ public class LoginController {
         }
 
         // show a loading message to the user
-        // potentially do an animation
+        // potentially do an animation in the future
         this.view.setStatusMessage("Logging in...", false);
 
         // Do the login in a separate thread to keep UI responsive
@@ -41,15 +44,23 @@ public class LoginController {
                     Platform.runLater(() -> {
                         this.view.setStatusMessage("Login successful!", false);
                         this.view.clearFields();
+
+                        try {
+                            Thread.sleep(SUCCESS_DELAY_MS);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+
+                        navigationController.showChatScreen(username);
                     });
                 } else {
                     Platform.runLater(() -> {
-                        this.view.setStatusMessage("Login failed. Invalid credentials", false);
+                        this.view.setStatusMessage("Login failed. Invalid credentials", true);
                     });
                 }
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    this.view.setStatusMessage("Login failed. Invalid credentials.", true);
+                    this.view.setStatusMessage("Error: " + e.getMessage(), true);
                 });
             }
         }).start(); 
@@ -72,6 +83,13 @@ public class LoginController {
                 if (success) {
                     Platform.runLater(() -> {
                         this.view.setStatusMessage("Registration successful! You can now login.", false);
+
+                        try {
+                            Thread.sleep(SUCCESS_DELAY_MS);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+
                     });
                 } else {
                     Platform.runLater(() -> {

@@ -1,7 +1,5 @@
 package com.example.haru.controller;
 
-import java.util.function.Consumer;
-
 import com.example.haru.model.ConnectionModel;
 import com.example.haru.model.MessageStore;
 import com.example.haru.view.ChatView;

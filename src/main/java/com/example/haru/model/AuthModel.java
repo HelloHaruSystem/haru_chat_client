@@ -1,116 +1,168 @@
 package com.example.haru.model;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 
 import org.json.JSONObject;
 
 import com.example.haru.config.AppConfig;
+import com.example.haru.util.TokenManager;
 
 public class AuthModel {
     private final AppConfig config;
+    private final HttpClient httpClient;
+
+    // timeout constant 
+    private static final int TIMEOUT_SECONDS = 10;
 
     public AuthModel() {
         this.config = AppConfig.getInstance();
+        this.httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+            .build();
     }
 
-    public String login(String username, String password) throws IOException {
+    public String login(String username, String password) throws IOException, InterruptedException {
         URI uri = URI.create(this.config.getDefaultAPIBaseUrl() + this.config.getDefaultLoginEndpoint());
-        URL url = uri.toURL();
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        // create request body
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("username", username);
+        requestBody.put("password", password);
+
+        // create the request
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(uri)
+            .header("Content-Type", "application/json")
+            .header("Accept", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
+            .timeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+            .build();
         
-        try {
-            // Set up the request
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setDoOutput(true);
-            
-            // Create the request body
-            JSONObject requestBody = new JSONObject();
-            requestBody.put("username", username);
-            requestBody.put("password", password);
-            
-            // Send the request
-            try (OutputStream outputStream = connection.getOutputStream()) {
-                byte[] input = requestBody.toString().getBytes(StandardCharsets.UTF_8);
-                outputStream.write(input, 0, input.length);
-            }
-            
-            // Handle the response
-            int statusCode = connection.getResponseCode();
-            
-            if (statusCode == 200) {
-                // Read the response
-                try (BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-                    StringBuilder response = new StringBuilder();
-                    String responseLine;
-                    while ((responseLine = bufferedReader.readLine()) != null) {
-                        response.append(responseLine.trim());
-                    }
-                    
-                    // Parse the JSON response
-                    JSONObject jsonResponse = new JSONObject(response.toString());
+        // send the request
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // handle the response
+        int statusCode = response.statusCode();
+        String responseBody = response.body();
+
+        if (statusCode == 200) {
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                // check for the success flag send from auth server
+                if (jsonResponse.has("success") && jsonResponse.getBoolean("success")) {
                     return jsonResponse.getString("token");
+                } else {
+                    System.out.println("Login failed: " +
+                        (jsonResponse.has("message") ? jsonResponse.getString("message") : "Unknown error"));
+                    return null;
                 }
-            } else {
-                //TODO: Handle error response
+            } catch (Exception e) {
+                System.out.println("Error parsing JSON response: " + e.getMessage());
                 return null;
             }
-        } catch (IOException e) {
-            System.out.println("Network error during login: " + e.getMessage());
-            throw e;
-        } finally {
-            connection.disconnect();
+        } else {
+            System.out.println("Login failed with status code: " + statusCode);
+            System.out.println("Response: " + responseBody);
+            return null;
         }
     }
 
-    public boolean register(String username, String password) throws IOException {
+    public boolean register(String username, String password) throws IOException, InterruptedException {
         URI uri = URI.create(this.config.getDefaultAPIBaseUrl() + this.config.getDefaultRegisterEndPoint());
-        URL url = uri.toURL();
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        try {
-            // set up the request
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setDoOutput(true);
+        // create request body
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("username", username);
+        requestBody.put("password", password);
 
-            // create the request body
-            JSONObject requestBody = new JSONObject();
-            requestBody.put("username", username);
-            requestBody.put("password", password);
+        // create the request
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(uri)
+            .header("Content-Type", "application/json")
+            .header("Accept", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
+            .timeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+            .build();
+        
+        // send the request
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // send the request
-            try (OutputStream outputStream = connection.getOutputStream()) {
-                byte[] input = requestBody.toString().getBytes(StandardCharsets.UTF_8);
-                outputStream.write(input, 0, input.length);
+        // handle the response
+        int statusCode = response.statusCode();
+        String responseBody = response.body();
+
+        if (statusCode == 201) {
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                // check for the success flag send from the auth server
+                if (jsonResponse.has("success") && jsonResponse.getBoolean("success")) {
+                    return true;
+                } else {
+                    System.out.println("Registration failed: " +
+                        (jsonResponse.has("message") ? jsonResponse.getString("message") : "Unknown error"));
+                    return false;
+                }
+            } catch (Exception e) {
+                System.out.println("Error parsing JSON response: " + e.getMessage());
+                return false;
             }
-
-            // handle the response
-            int statusCode = connection.getResponseCode();
-
-            if (statusCode != 201) {
-                //TODO: read error response for logging
-            }
-            // 201 created if successful
-            return statusCode == 201;
-        } catch (IOException e) {
-            System.out.println("Network error during registration: " + e.getMessage());
-            throw e;
-        } finally {
-            connection.disconnect();
+        } else {
+            System.out.println("Registration failed with status code: " + statusCode);
+            System.out.println("Response: " + responseBody);
+            return false;
         }
     }
 
+    //TODO: Finish this method
+    // look at return
+    public void getCurrentUserInfo() throws IOException, InterruptedException {
+        URI uri = URI.create(this.config.getDefaultAPIBaseUrl() + this.config.getDefaultRegisterEndPoint());
+
+        // create the request
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(uri)
+            .header("Content-Type", "application/json")
+            .header("Accept", "application/json")
+            .header("Authorization", "Bearer " + TokenManager.getToken())
+            .GET()
+            .timeout(Duration.ofSeconds(TIMEOUT_SECONDS))
+            .build();
+        
+        // send the request
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // handle the response
+        int statusCode = response.statusCode();
+        String responseBody = response.body();
+
+        if (statusCode == 200) {
+            try {
+                JSONObject jsonResponse = new JSONObject(responseBody);
+
+                // check for the success flag send from the auth server
+                if (jsonResponse.has("success") && jsonResponse.getBoolean("success")) {
+                    return;
+                } else {
+                    System.out.println("fetching user information failed: " +
+                        (jsonResponse.has("message") ? jsonResponse.getString("message") : "Unknown error"));
+                    return;
+                }
+            } catch (Exception e) {
+                System.out.println("Error parsing JSON response: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Fetching failed with status code: " + statusCode);
+            System.out.println("Response: " + responseBody);
+        }
+    }
+    
     //TODO: add feature
     public String refreshToken(String currentToken) {
         throw new UnsupportedOperationException("Feature incomplete.");
