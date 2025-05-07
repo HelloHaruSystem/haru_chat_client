@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
@@ -18,7 +19,8 @@ public class AuthModel {
     private static final String REGISTER_ENDPOINT = "/auth/register";
 
     public String login(String username, String password) throws IOException {
-        URL url = new URL(API_BASE_URL + LOGIN_ENDPOINT);
+        URI uri = URI.create(API_BASE_URL + LOGIN_ENDPOINT);
+        URL url = uri.toURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         
         try {
@@ -66,7 +68,8 @@ public class AuthModel {
     }
 
     public boolean register(String username, String password) throws IOException {
-        URL url = new URL(API_BASE_URL + REGISTER_ENDPOINT);
+        URI uri = URI.create(API_BASE_URL + LOGIN_ENDPOINT);
+        URL url = uri.toURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         try {

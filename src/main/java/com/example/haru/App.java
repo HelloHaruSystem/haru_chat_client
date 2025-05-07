@@ -2,7 +2,6 @@ package com.example.haru;
 
 import java.io.InputStream;
 
-import com.example.haru.controller.ChatController;
 import com.example.haru.controller.NavigationController;
 
 import javafx.application.Application;
