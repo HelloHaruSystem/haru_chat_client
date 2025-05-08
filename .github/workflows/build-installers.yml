@@ -1,0 +1,186 @@
+name: Build Installers
+
+on:
+  workflow_dispatch:  # Allow manual trigger from GitHub UI
+    inputs:
+      version:
+        description: 'Version number for the build (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+  push:
+    tags:
+      - 'v*'  # Run workflow when tags starting with 'v' are pushed
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+          
+      - name: Build with Maven
+        run: mvn clean package
+        
+      - name: Extract version
+        id: get_version
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            echo "VERSION=${{ github.event.inputs.version }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+          } else {
+            $VERSION = "${{ github.ref_name }}" -replace '^v',''
+            echo "VERSION=$VERSION" | Out-File -FilePath $env:GITHUB_ENV -Append
+          }
+        
+      - name: Create Windows installer
+        run: |
+          jpackage --name "HaruChat" `
+                   --app-version "$env:VERSION" `
+                   --vendor "YourCompanyName" `
+                   --input target `
+                   --dest target/installer `
+                   --main-jar haru_chat_client-1.0-SNAPSHOT.jar `
+                   --main-class com.example.haru.App `
+                   --type exe `
+                   --win-dir-chooser `
+                   --win-menu `
+                   --win-shortcut
+      
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-installer
+          path: target/installer/*.exe
+          retention-days: 30
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+          
+      - name: Install required packages
+        run: sudo apt-get update && sudo apt-get install -y fakeroot
+        
+      - name: Build with Maven
+        run: mvn clean package
+        
+      - name: Extract version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+          else
+            VERSION="${{ github.ref_name }}"
+            VERSION="${VERSION#v}"
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
+          fi
+        
+      - name: Create Linux installer
+        run: |
+          jpackage --name "HaruChat" \
+                   --app-version "$VERSION" \
+                   --vendor "YourCompanyName" \
+                   --input target \
+                   --dest target/installer \
+                   --main-jar haru_chat_client-1.0-SNAPSHOT.jar \
+                   --main-class com.example.haru.App \
+                   --type deb \
+                   --linux-shortcut \
+                   --linux-menu-group "Network"
+      
+      - name: Upload Linux installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-installer
+          path: target/installer/*.deb
+          retention-days: 30
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+          
+      - name: Build with Maven
+        run: mvn clean package
+        
+      - name: Extract version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+          else
+            VERSION="${{ github.ref_name }}"
+            VERSION="${VERSION#v}"
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
+          fi
+        
+      - name: Create macOS installer
+        run: |
+          jpackage --name "HaruChat" \
+                   --app-version "$VERSION" \
+                   --vendor "YourCompanyName" \
+                   --input target \
+                   --dest target/installer \
+                   --main-jar haru_chat_client-1.0-SNAPSHOT.jar \
+                   --main-class com.example.haru.App \
+                   --type dmg \
+                   --mac-package-name "HaruChat"
+      
+      - name: Upload macOS installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-installer
+          path: target/installer/*.dmg
+          retention-days: 30
+
+  create-release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-installer
+          path: windows-installer
+          
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-installer
+          path: linux-installer
+          
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: macos-installer
+          path: macos-installer
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            windows-installer/*.exe
+            linux-installer/*.deb
+            macos-installer/*.dmg
+          draft: false
+          prerelease: false
