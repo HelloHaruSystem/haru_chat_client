@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+import com.example.haru.util.TokenManager;
+
 public class ConnectionModel {
     private String serverAddress;
     private int port;
@@ -40,15 +42,34 @@ public class ConnectionModel {
                 this.out = new PrintWriter(connection.getOutputStream(), true); // true for auto flush
                 this.in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-                // send the username the server
-                out.println(this.username);
-                out.flush();
+                // wait to get the chat servers authentication prompt
+                String serverPrompt = in.readLine();
+                System.out.println("Server: " + serverPrompt); // debug
 
-                this.isConnected = true;
+                // send the authentication data (username and the JWT token)
+                String token = TokenManager.getToken();
+                if (token == null || token.isEmpty()) {
+                    System.out.println("Error: No JWT token available");
+                    disconnect();
+                    return;
+                }
 
-                // start the message listener
-                startMessageListener();
+                // send username and token in the format expected by the chat server username and token separated by a coma
+                out.println(this.username + "," + token);
 
+                // wait for the auth result
+                String authResult = in.readLine();
+                System.out.println("Auth result: " + authResult); // debug
+
+                if (authResult.equals("Authentication successful")) {
+                    this.isConnected = true;
+                    // start the message listener
+                    startMessageListener();
+                } else {
+                    System.out.println("Authentication failed: " + authResult);
+                    disconnect();
+                }
+                
             } catch (IOException e) {
                 System.out.println("Failed to connect to the server: " + e.getMessage());
             }
