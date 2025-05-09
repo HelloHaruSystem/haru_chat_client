@@ -47,10 +47,6 @@ public class LoginController {
                         this.view.setStatusMessage("Auth server login successful! Connecting to chat server", false);
                         this.view.clearFields();
                     });
-                } else {
-                    Platform.runLater(() -> {
-                        this.view.setStatusMessage("Login failed. Invalid credentials", true);
-                    });
 
                     // now, verify authentication with the chat server before changing to chat view
                     AppConfig config = AppConfig.getInstance();
@@ -65,8 +61,17 @@ public class LoginController {
 
                             navigationController.showChatScreen(username);
                         });
+                    } else {
+                        // Auth server success but chat server failed
+                        Platform.runLater(() -> {
+                            this.view.setStatusMessage("Chat server authentication failed. Token may be invalid.", true);
+                            TokenManager.clearToken();
+                        });
                     }
-
+                } else {
+                    Platform.runLater(() -> {
+                        this.view.setStatusMessage("Login failed. Invalid credentials", true);
+                    });
                 }
             } catch (Exception e) {
                 Platform.runLater(() -> {
