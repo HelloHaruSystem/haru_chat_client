@@ -173,10 +173,12 @@ public class ConnectionModel {
             String response = tempIn.readLine();
             System.out.println("Auth response: " + response); // debug
 
-            // if authentication succeeded, tell server this is just verification
-            if (response != null && response.contains("Authentication successful")) {
+            boolean isSuccess = (response != null && !response.contains("Authentication failed") && 
+                                !response.contains("Invalid format") && !response.contains("User already logged in"));
+            
+            if (isSuccess) {
                 tempOut.println("VERIFY_ONLY");
-            }
+            }  
 
             // clean everything up
             tempOut.close();
@@ -184,8 +186,8 @@ public class ConnectionModel {
             tempConnection.close();
 
             // check if authentication was successful
-            return response != null && response.contains("Authentication successful");
-            
+            return isSuccess;
+
         } catch (IOException e) {
             System.out.println("Error verifying authentication: " + e.getMessage());
             e.printStackTrace();
