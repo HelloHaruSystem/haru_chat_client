@@ -113,7 +113,7 @@ public class NavigationController {
         // show login screen
         showLoginScreen();
 
-        // then shutdown the chatcontroller
+        // then shutdown the chat controller
         if(tempChatController != null) {
             tempChatController.shutdown();
         }

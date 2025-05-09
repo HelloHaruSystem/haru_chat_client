@@ -1,6 +1,8 @@
 package com.example.haru.controller;
 
+import com.example.haru.config.AppConfig;
 import com.example.haru.model.AuthModel;
+import com.example.haru.model.ConnectionModel;
 import com.example.haru.util.TokenManager;
 import com.example.haru.view.LoginView;
 
@@ -42,21 +44,29 @@ public class LoginController {
 
                     // update UI on the UI thread (javafx thread)
                     Platform.runLater(() -> {
-                        this.view.setStatusMessage("Login successful!", false);
+                        this.view.setStatusMessage("Auth server login successful! Connecting to chat server", false);
                         this.view.clearFields();
-
-                        try {
-                            Thread.sleep(SUCCESS_DELAY_MS);
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                        }
-
-                        navigationController.showChatScreen(username);
                     });
                 } else {
                     Platform.runLater(() -> {
                         this.view.setStatusMessage("Login failed. Invalid credentials", true);
                     });
+
+                    // now, verify authentication with the chat server before changing to chat view
+                    AppConfig config = AppConfig.getInstance();
+                    ConnectionModel tempConnection = new ConnectionModel();
+                    boolean chatAuthSuccessful = tempConnection.verifyAuthentication(username, token, config.getDefaultServerAddress(), config.getDefaultServerPort());
+
+                    if(chatAuthSuccessful) {
+                        // incase of both auth and chat server authentication are successful
+                        Platform.runLater(() -> {
+                            this.view.setStatusMessage("login successful!", false);
+                            this.view.clearFields();
+
+                            navigationController.showChatScreen(username);
+                        });
+                    }
+
                 }
             } catch (Exception e) {
                 Platform.runLater(() -> {

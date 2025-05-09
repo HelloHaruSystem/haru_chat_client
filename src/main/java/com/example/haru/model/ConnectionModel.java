@@ -12,6 +12,8 @@ import java.util.function.Consumer;
 
 import com.example.haru.util.TokenManager;
 
+import javafx.application.Platform;
+
 public class ConnectionModel {
     private String serverAddress;
     private int port;
@@ -31,6 +33,7 @@ public class ConnectionModel {
 
     // server communication methods
     //TODO: Establish connection to server
+    //TODO: Split this method into small methods
     public void connect(String username, String serverAddress, int port) {
         this.username = username;
         this.serverAddress = serverAddress;
@@ -38,6 +41,8 @@ public class ConnectionModel {
 
         this.executorService.submit(() -> {
             try {
+                System.out.println("Connecting to server: " + serverAddress + ":" + port); // debug
+
                 this.connection = new Socket(this.serverAddress, this.port);
                 this.out = new PrintWriter(connection.getOutputStream(), true); // true for auto flush
                 this.in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -54,15 +59,19 @@ public class ConnectionModel {
                     return;
                 }
 
+                System.out.println("Sending auth credentials: " + username + ",TOKEN"); // debug
+
                 // send username and token in the format expected by the chat server username and token separated by a coma
                 out.println(this.username + "," + token);
 
                 // wait for the auth result
+                // this should be "Authentication successful since we already verified in the login controller"
                 String authResult = in.readLine();
-                System.out.println("Auth result: " + authResult); // debug
+                System.out.println("Auth result: " + authResult);
 
-                if (authResult.equals("Authentication successful")) {
+                if (authResult != null && authResult.contains("Authentication successful")) {
                     this.isConnected = true;
+                    System.out.println("Authentication confirmed"); // debug
                     // start the message listener
                     startMessageListener();
                 } else {
@@ -144,6 +153,37 @@ public class ConnectionModel {
                 handleDisconnection();
             }
         });
+    }
+
+    public boolean verifyAuthentication(String username, String token, String serverAddress, int port) {
+        try {
+            Socket tempConnection = new Socket(serverAddress, port);
+            PrintWriter tempOut = new PrintWriter(tempConnection.getOutputStream(), true); // true for auto flush
+            BufferedReader tempIn = new BufferedReader(new InputStreamReader(tempConnection.getInputStream()));
+
+            // wait for auth prompt
+            String prompt = tempIn.readLine();
+            System.out.println("Auth Prompt: " + prompt); // debug
+
+            // send credentials
+            tempOut.println(username + "," + token);
+
+            // wait for the response
+            String response = tempIn.readLine();
+            System.out.println("Auth response: " + response); // debug
+
+            // clean everything up
+            tempOut.close();
+            tempIn.close();
+            tempConnection.close();
+
+            // check if authentication was successful
+            return response != null && response.contains("Authentication successful");
+        } catch (IOException e) {
+            System.out.println("Error verifying authentication: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // method to handle unexpected disconnection internally
