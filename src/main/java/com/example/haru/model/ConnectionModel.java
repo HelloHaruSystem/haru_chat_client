@@ -157,6 +157,7 @@ public class ConnectionModel {
 
     public boolean verifyAuthentication(String username, String token, String serverAddress, int port) {
         try {
+            System.out.println("Verifying authentication with chat server..."); // debug
             Socket tempConnection = new Socket(serverAddress, port);
             PrintWriter tempOut = new PrintWriter(tempConnection.getOutputStream(), true); // true for auto flush
             BufferedReader tempIn = new BufferedReader(new InputStreamReader(tempConnection.getInputStream()));
@@ -168,9 +169,14 @@ public class ConnectionModel {
             // send credentials
             tempOut.println(username + "," + token);
 
-            // wait for the response
+            // wait for the authentication response
             String response = tempIn.readLine();
             System.out.println("Auth response: " + response); // debug
+
+            // if authentication succeeded, tell server this is just verification
+            if (response != null && response.contains("Authentication successful")) {
+                tempOut.println("VERIFY_ONLY");
+            }
 
             // clean everything up
             tempOut.close();
@@ -179,6 +185,7 @@ public class ConnectionModel {
 
             // check if authentication was successful
             return response != null && response.contains("Authentication successful");
+            
         } catch (IOException e) {
             System.out.println("Error verifying authentication: " + e.getMessage());
             e.printStackTrace();
