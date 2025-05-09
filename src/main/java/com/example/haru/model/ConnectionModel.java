@@ -69,7 +69,7 @@ public class ConnectionModel {
                     System.out.println("Authentication failed: " + authResult);
                     disconnect();
                 }
-                
+
             } catch (IOException e) {
                 System.out.println("Failed to connect to the server: " + e.getMessage());
             }
@@ -152,18 +152,29 @@ public class ConnectionModel {
         //TODO: implement reconnect logic!
     }
 
-    // turns the incoming message into a ChatMessage object
+    // Regular message (format: "username: message")
+    //TODO: potentially send it in JSON format in the future
     private ChatMessage parseMessage(String rawMessage) {
-        // TODO: changing server side how messages are send and create the logic to parse it here
-        // for example json format
-        
-        // temporary solution below
-        int firstSpace = rawMessage.indexOf(' ');
-        String sender = rawMessage.substring(0, firstSpace) + ":";
-        String message = rawMessage.substring(firstSpace + 1);
-        ChatMessage parsedMessage = new ChatMessage(sender, message, LocalDateTime.now(), sender.equals(username));
+        // handle system messages
+        if (rawMessage.startsWith("Authentication") || rawMessage.startsWith("Welcome")) {
+            return new ChatMessage("System", rawMessage, LocalDateTime.now(), false);
+        }
 
-        return parsedMessage;
+        // handle private messages
+        if (rawMessage.startsWith("[Private")) {
+            return new ChatMessage("Private", rawMessage, LocalDateTime.now(), rawMessage.startsWith("[Private to"));
+        }
+
+        // handle regular messages
+        int colonIndex = rawMessage.indexOf(": ");
+        if (colonIndex > 0) {
+            String sender = rawMessage.substring(0, colonIndex);
+            String messageContent = rawMessage.substring(colonIndex + 2);
+            return new ChatMessage(sender, messageContent, LocalDateTime.now(), sender.equals(username));
+        }
+        
+        // Fallback incase of other message formats
+        return new ChatMessage("System", rawMessage, LocalDateTime.now(), false);
     }
 
     // used to shutdown properly
