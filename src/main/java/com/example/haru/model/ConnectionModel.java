@@ -157,37 +157,30 @@ public class ConnectionModel {
 
     public boolean verifyAuthentication(String username, String token, String serverAddress, int port) {
         try {
-            System.out.println("Verifying authentication with chat server..."); // debug
+            System.out.println("Verifying authentication with chat server...");
             Socket tempConnection = new Socket(serverAddress, port);
-            PrintWriter tempOut = new PrintWriter(tempConnection.getOutputStream(), true); // true for auto flush
+            PrintWriter tempOut = new PrintWriter(tempConnection.getOutputStream(), true);
             BufferedReader tempIn = new BufferedReader(new InputStreamReader(tempConnection.getInputStream()));
-
-            // wait for auth prompt
+    
+            // Wait for auth prompt
             String prompt = tempIn.readLine();
-            System.out.println("Auth Prompt: " + prompt); // debug
-
-            // send credentials
-            tempOut.println(username + "," + token);
-
-            // wait for the authentication response
-            String response = tempIn.readLine();
-            System.out.println("Auth response: " + response); // debug
-
-            boolean isSuccess = (response != null && !response.contains("Authentication failed") && 
-                                !response.contains("Invalid format") && !response.contains("User already logged in"));
+            System.out.println("Auth prompt: " + prompt);
+    
+            // Send verification request with credentials
+            tempOut.println("VERIFY:" + username + "," + token);
             
-            if (isSuccess) {
-                tempOut.println("VERIFY_ONLY");
-            }  
-
-            // clean everything up
+            // Wait for verification result
+            String response = tempIn.readLine();
+            System.out.println("Verification response: " + response);
+            
+            // Close connection
             tempOut.close();
             tempIn.close();
             tempConnection.close();
-
-            // check if authentication was successful
-            return isSuccess;
-
+            
+            // Check if verification was successful
+            return response != null && response.equals("VERIFIED:SUCCESS");
+            
         } catch (IOException e) {
             System.out.println("Error verifying authentication: " + e.getMessage());
             e.printStackTrace();
